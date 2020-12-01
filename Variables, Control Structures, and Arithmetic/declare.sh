@@ -1,9 +1,9 @@
 #!/bin/bash
-declare -l lstring="ABCdef"
-declare -u ustring="ABCdef"
+declare -l lstring="ABCdef"     # for lowercase
+declare -u ustring="ABCdef"     # for uppercase
 declare -r readonly="A Value"
-declare -a Myarray
-declare -A Myarray1
+declare -a Myarray              # Array indexed using integers
+declare -A Myarray1             # Array indexed using strings
 
 echo lstring = $lstring
 echo ustring = $ustring
