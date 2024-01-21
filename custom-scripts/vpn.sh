@@ -85,6 +85,9 @@ i)
 	# Connect to IIMJobs VPN
 	echo "\nConnecting to IIMJobs VPN...\n"
 	oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
+	if [ $? -gt 0 ]; then
+		oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
+	fi
 	echo "Connected\n"
 	;;
 h)
