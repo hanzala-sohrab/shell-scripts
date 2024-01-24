@@ -9,6 +9,7 @@ display_usage() {
 	echo "  d	Diconnect from IIMJobs & Hirist VPNs"
 	echo "  h	Connect to Hirist VPN"
 	echo "  i	Connect to IIMJobs VPN"
+	echo "  g	Connect to Global VPN"
 	echo "  r	Refresh VPN connections"
 	# Add other options and their descriptions here
 }
@@ -35,8 +36,12 @@ connect() {
 		openvpn3 session-start --config-path /net/openvpn/v3/configuration/80930f3exc44ax4876xbf1ax8bc0946f78c6
 	fi
 	echo "\nConnecting to IIMJobs VPN...\n"
-	oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
-	echo "Connected\n"
+	if [ $? -gt 0 ]; then
+		oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
+		echo "Connected\n"
+	fi
+	echo "\nConnecting to Global VPN...\n"
+	openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
 	echo "-----------------------------------------------------------------------------"
 }
 
@@ -96,6 +101,14 @@ h)
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/80930f3exc44ax4876xbf1ax8bc0946f78c6
 	if [ $? -gt 0 ]; then
 		openvpn3 session-start --config-path /net/openvpn/v3/configuration/80930f3exc44ax4876xbf1ax8bc0946f78c6
+	fi
+	;;
+g)
+	# Connect to Global VPN
+	echo "Connecting to Global VPN...\n"
+	openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
+	if [ $? -gt 0 ]; then
+		openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
 	fi
 	;;
 r)
