@@ -30,18 +30,20 @@ option=$1
 connect() {
 	# Connect
 	echo "-----------------------------------------------------------------------------"
+
 	echo "Connecting to Hirist VPN...\n"
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/80930f3exc44ax4876xbf1ax8bc0946f78c6
 	if [ $? -gt 0 ]; then
 		openvpn3 session-start --config-path /net/openvpn/v3/configuration/80930f3exc44ax4876xbf1ax8bc0946f78c6
 	fi
-	echo "\nConnecting to IIMJobs VPN...\n"
-	if [ $? -gt 0 ]; then
-		oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
-		echo "Connected\n"
-	fi
+
 	echo "\nConnecting to Global VPN...\n"
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
+
+	echo "\nConnecting to IIMJobs VPN...\n"
+	oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
+	echo "Connected\n"
+
 	echo "-----------------------------------------------------------------------------"
 }
 
@@ -62,6 +64,8 @@ disconnect() {
 				echo "Disconnecting IIMJobs VPN"
 			elif echo "$config_name" | grep -q "hirist"; then
 				echo "Disconnecting Hirist VPN"
+			elif echo "$config_name" | grep -q "global"; then
+				echo "Disconnectiong Global VPN"
 			fi
 
 			openvpn3 session-manage -D --session-path $session
