@@ -10,7 +10,7 @@ display_usage() {
 	echo "  h	Connect to Hirist VPN"
 	echo "  i	Connect to IIMJobs VPN"
 	echo "  g	Connect to Global VPN"
-	echo "  u Connect to Updazz/Engineeristic VPN"
+	echo "  u Connect to Updazz/Engineeristic/Biojoby VPN"
 	echo "  r	Refresh VPN connections"
 	# Add other options and their descriptions here
 }
@@ -41,7 +41,7 @@ connect() {
 	echo "\nConnecting to Global VPN...\n"
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
 
-	echo "\nConnecting to Updazz/Engineeristic VPN...\n"
+	echo "\nConnecting to Updazz/Engineeristic/Biojoby VPN...\n"
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae
 
 	echo "\nConnecting to IIMJobs VPN...\n"
@@ -71,7 +71,7 @@ disconnect() {
 			elif echo "$config_name" | grep -q "global"; then
 				echo "Disconnecting Global VPN"
 			elif echo "$config_name" | grep -q "updazz"; then
-				echo "Disconnecting Updazz/Engineeristic VPN"
+				echo "Disconnecting Updazz/Engineeristic/Biojoby VPN"
 			fi
 
 			openvpn3 session-manage -D --session-path $session
@@ -122,8 +122,8 @@ g)
 	fi
 	;;
 u)
-	# Connect to Updazz/Engineeristic VPN
-	echo "Connecting to Updazz/Engineeristic VPN...\n"
+	# Connect to Updazz/Engineeristic/Biojoby VPN
+	echo "Connecting to Updazz/Engineeristic/Biojoby VPN...\n"
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae
 	if [ $? -gt 0 ]; then
 		openvpn3 session-start --config-path /net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae
