@@ -10,6 +10,7 @@ display_usage() {
 	echo "  h	Connect to Hirist VPN"
 	echo "  i	Connect to IIMJobs VPN"
 	echo "  g	Connect to Global VPN"
+	echo "  u Connect to Updazz/Engineeristic VPN"
 	echo "  r	Refresh VPN connections"
 	# Add other options and their descriptions here
 }
@@ -40,6 +41,9 @@ connect() {
 	echo "\nConnecting to Global VPN...\n"
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
 
+	echo "\nConnecting to Updazz/Engineeristic VPN...\n"
+	openvpn3 session-start --config-path /net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae
+
 	echo "\nConnecting to IIMJobs VPN...\n"
 	oathtool -b --totp MLYYSJBLOTTDSXD6 | xclip -selection clipboard && openvpn3 session-start --config-path /net/openvpn/v3/configuration/0fb59471x4cd3x427exb27bxdd6f19587353
 	echo "Connected\n"
@@ -65,7 +69,9 @@ disconnect() {
 			elif echo "$config_name" | grep -q "hirist"; then
 				echo "Disconnecting Hirist VPN"
 			elif echo "$config_name" | grep -q "global"; then
-				echo "Disconnectiong Global VPN"
+				echo "Disconnecting Global VPN"
+			elif echo "$config_name" | grep -q "updazz"; then
+				echo "Disconnecting Updazz/Engineeristic VPN"
 			fi
 
 			openvpn3 session-manage -D --session-path $session
@@ -113,6 +119,14 @@ g)
 	openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
 	if [ $? -gt 0 ]; then
 		openvpn3 session-start --config-path /net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a
+	fi
+	;;
+u)
+	# Connect to Updazz/Engineeristic VPN
+	echo "Connecting to Updazz/Engineeristic VPN...\n"
+	openvpn3 session-start --config-path /net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae
+	if [ $? -gt 0 ]; then
+		openvpn3 session-start --config-path /net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae
 	fi
 	;;
 r)
