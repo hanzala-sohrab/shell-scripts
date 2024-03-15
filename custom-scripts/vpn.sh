@@ -10,7 +10,7 @@ display_usage() {
 	echo "  h	Connect to Hirist VPN"
 	echo "  i	Connect to IIMJobs VPN"
 	echo "  g	Connect to Global VPN"
-	echo "  u Connect to Updazz/Engineeristic/Biojoby VPN"
+	echo "  u	Connect to Updazz/Engineeristic/Biojoby VPN"
 	echo "  r	Refresh VPN connections"
 	# Add other options and their descriptions here
 }
