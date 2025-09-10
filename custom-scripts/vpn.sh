@@ -93,14 +93,63 @@ connect_vpn() {
             return 1
         fi
         
-        if ! oathtool -b --totp "$TOTP_SECRET" | xclip -selection clipboard; then
-            log_error "Failed to generate or copy TOTP token"
+        if ! command -v expect >/dev/null 2>&1; then
+            log_error "expect is required for IIMJobs VPN automation but not installed"
             return 1
         fi
-        log_info "TOTP token copied to clipboard"
+        
+        local totp_code
+        if ! totp_code=$(oathtool -b --totp "$TOTP_SECRET" 2>/dev/null); then
+            log_error "Failed to generate TOTP token"
+            return 1
+        fi
+        log_info "Generated TOTP token for authentication"
+        
+        # Use expect to automatically input the TOTP code
+        local max_retries=2
+        local attempt=1
+        
+        while [ $attempt -le $max_retries ]; do
+            log_info "Attempting connection (attempt $attempt/$max_retries)..."
+            
+            if expect -c "
+                set timeout 30
+                spawn openvpn3 session-start --config-path \"$config_path\"
+                expect {
+                    \"Enter Authenticator Code:\" {
+                        send \"$totp_code\r\"
+                        expect eof
+                        exit 0
+                    }
+                    timeout {
+                        exit 1
+                    }
+                    eof {
+                        exit 0
+                    }
+                }
+            " >/dev/null 2>&1; then
+                log_success "Successfully connected to $vpn_name"
+                return 0
+            else
+                log_warning "Connection attempt $attempt failed for $vpn_name"
+                ((attempt++))
+                # Generate new TOTP code for retry
+                if [ $attempt -le $max_retries ]; then
+                    sleep 2
+                    if ! totp_code=$(oathtool -b --totp "$TOTP_SECRET" 2>/dev/null); then
+                        log_error "Failed to generate TOTP token for retry"
+                        return 1
+                    fi
+                fi
+            fi
+        done
+        
+        log_error "Failed to connect to $vpn_name after $max_retries attempts"
+        return 1
     fi
     
-    # Attempt connection with retry
+    # Standard connection for other VPNs
     local max_retries=2
     local attempt=1
     
