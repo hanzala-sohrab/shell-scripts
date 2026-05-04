@@ -7,7 +7,7 @@ readonly TOTP_SECRET="${VPN_TOTP_SECRET:-MLYYSJBLOTTDSXD6}"
 declare -A VPN_CONFIGS=(
     ["hirist"]="/net/openvpn/v3/configuration/80930f3exc44ax4876xbf1ax8bc0946f78c6:Hirist VPN"
     ["global"]="/net/openvpn/v3/configuration/d9e58a57x9d41x450axb72cxa403467e9c6a:Global VPN"
-    ["updazz"]="/net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae:Updazz/Engineeristic/Biojoby VPN"
+    # ["updazz"]="/net/openvpn/v3/configuration/b780cf5exe90ex4aa4xbefcx52182c6981ae:Updazz/Engineeristic/Biojoby VPN"
     ["oregon"]="/net/openvpn/v3/configuration/be82effbx2051x431bxa24exca4b46aa59aa:Oregon VPN"
     ["iimjobs"]="/net/openvpn/v3/configuration/0f27e462xced7x4d56xa0edx87b0bc520f9f:IIMJobs VPN"
 )
@@ -175,7 +175,7 @@ connect_all() {
     
     local failed_connections=0
     
-    for vpn_key in iimjobs hirist global updazz oregon; do
+    for vpn_key in iimjobs hirist global oregon; do
         if ! connect_vpn "$vpn_key"; then
             ((failed_connections++))
         fi
@@ -219,7 +219,7 @@ disconnect_all() {
             *hirist*) vpn_display_name="Hirist VPN" ;;
             *global*) vpn_display_name="Global VPN" ;;
             *oregon*) vpn_display_name="Oregon VPN" ;;
-            *updazz*) vpn_display_name="Updazz/Engineeristic/Biojoby VPN" ;;
+            # *updazz*) vpn_display_name="Updazz/Engineeristic/Biojoby VPN" ;;
         esac
         
         log_info "Disconnecting $vpn_display_name..."
@@ -279,9 +279,9 @@ main() {
         o)
             connect_vpn "oregon"
             ;;
-        u)
-            connect_vpn "updazz"
-            ;;
+        # u)
+        #     connect_vpn "updazz"
+        #     ;;
         r)
             log_info "Refreshing VPN connections..."
             disconnect_all
