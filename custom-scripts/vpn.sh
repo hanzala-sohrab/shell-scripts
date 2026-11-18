@@ -52,9 +52,11 @@ Options:
   o       Connect to Oregon VPN
   u       Connect to Updazz/Engineeristic/Biojoby VPN
   r       Refresh VPN connections (disconnect all, then connect all)
+  db      Re-pin VPN_IIMJOBS_PIN_IPS to IIMJobs (if Hirist reconnected)
 
 Environment Variables:
   VPN_TOTP_SECRET    TOTP secret for IIMJobs VPN (default: hardcoded value)
+  VPN_IIMJOBS_PIN_IPS  Space-separated IPs to always route via IIMJobs
 EOF
 }
 
@@ -167,6 +169,22 @@ connect_vpn() {
     return 1
 }
 
+# Hirist pushes /32 routes for some hosts that are only reachable via IIMJobs; a /32 beats
+# IIMJobs' wider routes, so repoint them at the IIMJobs tunnel. Re-run if Hirist reconnects.
+pin_iimjobs_routes() {
+    [[ -z "$VPN_IIMJOBS_PIN_IPS" ]] && return 0
+    local dev=$(openvpn3 sessions-list 2>/dev/null | awk '/Device:/{d=$NF} /Config name:.*iimjobs/{print d}')
+    [[ -z "$dev" ]] && return 0  # IIMJobs not connected
+    local ip
+    for ip in ${=VPN_IIMJOBS_PIN_IPS}; do
+        if sudo ip route replace "$ip/32" dev "$dev"; then
+            log_success "Routed $ip via IIMJobs ($dev)"
+        else
+            log_error "Failed to route $ip via IIMJobs"
+        fi
+    done
+}
+
 # Function to connect to all VPNs
 connect_all() {
     echo "============================================================================="
@@ -189,7 +207,9 @@ connect_all() {
         log_warning "$failed_connections VPN connection(s) failed"
     fi
     echo "============================================================================="
-    
+
+    pin_iimjobs_routes
+
     return $failed_connections
 }
 
@@ -268,10 +288,13 @@ main() {
             list_sessions
             ;;
         i)
-            connect_vpn "iimjobs"
+            connect_vpn "iimjobs" && pin_iimjobs_routes
             ;;
         h)
-            connect_vpn "hirist"
+            connect_vpn "hirist" && pin_iimjobs_routes
+            ;;
+        db)
+            pin_iimjobs_routes
             ;;
         g)
             connect_vpn "global"
